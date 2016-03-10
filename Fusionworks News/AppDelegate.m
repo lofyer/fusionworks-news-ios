@@ -21,6 +21,12 @@
 
 @implementation AppDelegate
 
+-(void)webViewDidFinishLoad:(UIWebView *)webView {
+    CGRect newBounds = webView.bounds;
+    newBounds.size.height = webView.scrollView.contentSize.height;
+    webView.bounds = newBounds;
+}
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
