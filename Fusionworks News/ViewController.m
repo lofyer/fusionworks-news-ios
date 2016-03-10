@@ -20,10 +20,10 @@
     NSURL *url = [NSURL URLWithString:@"https://forex.fusionworks.cn"];
     [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
 
-    //侧滑返回
+    //左边侧滑返回
     UIScreenEdgePanGestureRecognizer *bezelSwipeGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeBack:)];
     bezelSwipeGestureRecognizer.edges = UIRectEdgeLeft;
-    bezelSwipeGestureRecognizer.delegate = self;
+    //bezelSwipeGestureRecognizer.delegate = self.webView;
     [self.view addGestureRecognizer:bezelSwipeGestureRecognizer];
     UIView *invisibleScrollPreventer = [UIView new];
     invisibleScrollPreventer.frame = CGRectMake(0, 0, 10, self.view.frame.size.height);
