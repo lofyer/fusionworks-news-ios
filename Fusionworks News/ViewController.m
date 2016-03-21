@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 
+
 @interface ViewController ()
 
 @end
@@ -21,21 +22,69 @@
     [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
 
     //左边侧滑返回
-    UIScreenEdgePanGestureRecognizer *bezelSwipeGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeBack:)];
-    bezelSwipeGestureRecognizer.edges = UIRectEdgeLeft;
-    //bezelSwipeGestureRecognizer.delegate = self.webView;
-    [self.view addGestureRecognizer:bezelSwipeGestureRecognizer];
-    UIView *invisibleScrollPreventer = [UIView new];
-    invisibleScrollPreventer.frame = CGRectMake(0, 0, 10, self.view.frame.size.height);
-    [self.view addSubview:invisibleScrollPreventer];
-
+    UIScreenEdgePanGestureRecognizer *backSwipeGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeBack:)];
+    backSwipeGestureRecognizer.edges = UIRectEdgeLeft;
+    //backSwipeGestureRecognizer.delegate = self.webView;
+    [self.view addGestureRecognizer:backSwipeGestureRecognizer];
+    UIView *invisibleScrollPreventerLeft = [UIView new];
+    invisibleScrollPreventerLeft.frame = CGRectMake(0, 0, 20, self.view.frame.size.height);
+    [self.view addSubview:invisibleScrollPreventerLeft];
+    
+    //右边侧滑前进
+    UIScreenEdgePanGestureRecognizer *forwardSwipeGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeForward:)];
+    forwardSwipeGestureRecognizer.edges = UIRectEdgeRight;
+    //forwardSwipeGestureRecognizer.delegate = self.webView;
+    [self.view addGestureRecognizer:forwardSwipeGestureRecognizer];
+    UIView *invisibleScrollPreventerRight = [UIView new];
+    invisibleScrollPreventerRight.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width-20, self.view.frame.size.height);
+    [self.view addSubview:invisibleScrollPreventerRight];
 }
 
--(void)swipeBack:(UIScreenEdgePanGestureRecognizer *)recognizer
+-(void)swipeBack:(UIScreenEdgePanGestureRecognizer *)recognizerBack
 {
-    if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (_webView.canGoBack) {
-            [_webView goBack];
+    if (recognizerBack.state == UIGestureRecognizerStateBegan)
+    {
+        
+        UIGraphicsBeginImageContext ( self.webView.frame.size );
+        [self.webView.layer renderInContext:UIGraphicsGetCurrentContext() ];
+        
+        UIImage *grab = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        if ( _imgvcChild1 ) [ _imgvcChild1 removeFromSuperview ];
+        _imgvcChild1 = [[ UIImageView alloc ] initWithImage:grab ];
+        _imgvcChild1.frame = self.webView.frame;
+        _imgvcChild1.userInteractionEnabled = YES;
+        if ([self.webView canGoBack])
+        {
+            
+            [self.webView goBack];
+            
+        }
+        
+        [ self.view addSubview:_imgvcChild1 ];
+        
+    }
+    
+    if (recognizerBack.state == UIGestureRecognizerStateChanged)
+    {
+        _imgvcChild1.frame = CGRectMake([ recognizerBack locationInView:_imgvcChild1.superview ].x, _imgvcChild1.frame.origin.y, _imgvcChild1.frame.size.width, _imgvcChild1.frame.size.height);
+        
+    }
+    
+
+    if (recognizerBack.state == UIGestureRecognizerStateEnded)
+    {
+    
+        [_imgvcChild1 removeFromSuperview];
+    }
+        
+}
+-(void)swipeForward:(UIScreenEdgePanGestureRecognizer *)recognizerForward
+{
+    if (recognizerForward.state == UIGestureRecognizerStateEnded) {
+        if (_webView.canGoForward) {
+            [_webView goForward];
         }
     }
 }

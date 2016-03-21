@@ -10,7 +10,10 @@
 
 @interface ViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+//@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) UIImageView * imgvcChild1;
+//@property (nonatomic, strong) UIImageView * imgvcChild2;
+@property (retain, strong) IBOutlet UIWebView *webView;
 
 @end
 
